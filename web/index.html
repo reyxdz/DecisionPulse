@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Multi-Course Slot Confirmation Predictor</title>
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%233b82f6'/><text x='50' y='65' font-size='60' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'>DP</text></svg>">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+        <!-- Firebase SDK Compat version via CDN -->
+        <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
+        <style>
+            body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+            .card { box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); }
+            .scroll-container::-webkit-scrollbar { width: 6px; }
+            .scroll-container::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+            .scroll-container::-webkit-scrollbar-track { background: #e0e7ff; }
+            /* Placeholder text styling */
+            select option:first-child { color: #9ca3af; }
+            select option:not(:first-child) { color: #000000; }
+            input::placeholder { color: #9ca3af; font-style: italic; }
+            /* Preloader styles */
+            .preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+            .spinner { width: 50px; height: 50px; border: 4px solid #e0e7ff; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+    </head>
+
+    <body class="p-4 md:p-8">
+
+        <!-- Preloader -->
+        <div id="preloader" class="preloader">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <header class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-blue-700">DecisionPulse</h1>
+                <p class="text-gray-600 mt-2">A Course Acceptance Probability System of Upcoming 1st Year Students</p>
+            </header>
+
+            <div class="card bg-white p-6 md:p-10 rounded-xl overflow-hidden">
+                <!-- Course Type Selector -->
+                <div class="mb-8 pb-6 border-b-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg">
+                    <label for="courseType" class="block text-lg font-bold text-blue-900 mb-3">Select Your Target Program:</label>
+                    <select id="courseType" name="courseType" class="mt-2 block w-full rounded-lg border-2 border-blue-300 shadow-md focus:border-blue-600 focus:ring-2 focus:ring-blue-400 p-4 bg-white text-base font-medium hover:border-blue-400 transition">
+                        <option value="">Kindly choose your preferred program</option>
+                        <option value="TOURISM">Bachelor of Science in Tourism Management</option>
+                        <option value="CS">Bachelor of Science in Computer Science</option>
+                        <option value="CRIMINOLOGY">Bachelor of Science in Criminology</option>
+                        <option value="EDUCATION">Bachelor of Science in Education</option>
+                        <option value="NURSING">Bachelor of Science in Nursing</option>
+                    </select>
+                    <p class="text-sm text-gray-600 mt-3">📌 Start by selecting a program to begin the assessment.</p>
+                </div>
+
+                <!-- Prediction Form -->
+                <form id="predictionForm" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 scroll-container max-h-[60vh] overflow-y-auto pr-4" data-form-hidden="true">
+                    
+                    <!-- Section 1: Academic Data -->
+                    <div class="md:col-span-2 border-b pb-4 mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">1. Academic & Background</h2>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="gwa" class="block text-sm font-medium text-gray-700">General Weighted Average (GWA)</label>
+                        <input type="number" id="gwa" name="gwa" step="0.01" min="70" max="100" required placeholder="e.g., 85.5"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="shs_strand" class="block text-sm font-medium text-gray-700">SHS Strand/Track:</label>
+                        <select id="shs_strand" name="shs_strand" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white">
+                            <option value="">Select your strand</option>
+                            <option value="HUMSS">HUMSS</option>
+                            <option value="STEM">STEM</option>
+                            <option value="GAS">GAS</option>
+                            <option value="ABM">ABM</option>
+                            <option value="TVL">TVL</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="high_school_type" class="block text-sm font-medium text-gray-700">Type of High School graduated from:</label>
+                        <select id="high_school_type" name="high_school_type" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white">
+                            <option value="">Select high school type</option>
+                            <option value="Public">Public</option>
+                            <option value="Private">Private</option>
+                            <option value="Science High School">Science High School</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="with_honors" class="block text-sm font-medium text-gray-700">With Honors or recognition:</label>
+                        <select id="with_honors" name="with_honors" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Dynamic Questions Container -->
+                    <div id="dynamicQuestions" class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Questions will be dynamically inserted here -->
+                    </div>
+                    
+                    <!-- Universal Questions (Q11-Q20) - General Course Selection Factors -->
+                    <div class="md:col-span-2 border-b pt-4 pb-4 mb-4 mt-6">
+                        <h2 class="text-xl font-semibold text-gray-800">3. General Course Selection Factors</h2>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="q11" class="block text-sm font-medium text-gray-700">Did you choose this course because it aligns with your interests?</label>
+                        <select id="q11" name="q11" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q12" class="block text-sm font-medium text-gray-700">Do you feel confident in succeeding in this course?</label>
+                        <select id="q12" name="q12" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q13" class="block text-sm font-medium text-gray-700">Have you researched what careers are available after this course?</label>
+                        <select id="q13" name="q13" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white">
+                            <option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q14" class="block text-sm font-medium text-gray-700">Did your parents/guardians support your decision to take this course?</label>
+                        <select id="q14" name="q14" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q15" class="block text-sm font-medium text-gray-700">Did any relatives or friends influence your choice of course?</label>
+                        <select id="q15" name="q15" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q16" class="block text-sm font-medium text-gray-700">Do you personally know someone currently studying this course?</label>
+                        <select id="q16" name="q16" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q17" class="block text-sm font-medium text-gray-700">Can your family afford the tuition and other expenses for this course?</label>
+                        <select id="q17" name="q17" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q18" class="block text-sm font-medium text-gray-700">Are there available scholarships or financial aid options for this course?</label>
+                        <select id="q18" name="q18" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q19" class="block text-sm font-medium text-gray-700">Is the university near your home or place of residence?</label>
+                        <select id="q19" name="q19" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="input-group">
+                        <label for="q20" class="block text-sm font-medium text-gray-700">Did you apply for other courses as well?</label>
+                        <select id="q20" name="q20" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border bg-white"><option value="">Select</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="md:col-span-2 mt-6">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-200">
+                            Predict Confirmation Probability
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Prediction Result Card -->
+            <div id="resultCard" class="card bg-blue-50 mt-8 p-6 md:p-8 rounded-xl border-2 border-blue-200 hidden">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4 text-center">Prediction Result</h2>
+                <div id="resultText" class="text-center">
+                    <!-- Result will be inserted here -->
+                </div>
+                <div id="progressBar" class="w-full bg-gray-200 rounded-full h-4 mt-4">
+                    <div id="progressFill" class="h-4 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Custom Alert/Message Box -->
+            <div id="messageBox" class="fixed top-5 right-5 z-50 p-4 rounded-lg shadow-xl text-white bg-red-500 hidden" role="alert">
+                <p id="messageText"></p>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 pt-8 border-t border-gray-300 text-center text-sm text-gray-600">
+                <p class="font-semibold text-gray-800 mb-2">Developed By:</p>
+                <p>Rey Denzo</p>
+            </footer>
+        </div>
+
+        <script src="script.js"></script>
+        <script>
+            // Hide preloader when page fully loads
+            window.addEventListener('load', function() {
+                const preloader = document.getElementById('preloader');
+                preloader.style.display = 'none';
+            });
+        </script>
+    </body>
+</html>
