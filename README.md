@@ -1,21 +1,6 @@
 ```markdown
 # 📊 DecisionPulse
 
-<div align="center">
-
-<!-- TODO: Add project logo -->
-
-[![GitHub stars](https://img.shields.io/github/stars/reyxdz/DecisionPulse?style=for-the-badge)](https://github.com/reyxdz/DecisionPulse/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/reyxdz/DecisionPulse?style=for-the-badge)](https://github.com/reyxdz/DecisionPulse/network)
-[![GitHub issues](https://img.shields.io/github/issues/reyxdz/DecisionPulse?style=for-the-badge)](https://github.com/reyxdz/DecisionPulse/issues)
-[![GitHub license](https://img.shields.io/github/license/reyxdz/DecisionPulse?style=for-the-badge)](LICENSE) <!-- TODO: Add actual license file if applicable -->
-
-**Empowering informed decisions through an interactive, data-driven web application.**
-
-<!-- TODO: Add live demo link if hosted -->
-
-</div>
-
 ## 📖 Overview
 
 DecisionPulse is a dynamic web application designed to facilitate structured decision-making. It provides an intuitive interface for users to define various criteria, evaluate multiple options against these criteria, and visualize the resulting scores to make clearer, more objective choices. The application leverages client-side JavaScript for an interactive experience and includes a Python component for potential auxiliary data processing or advanced analysis.
@@ -29,26 +14,6 @@ DecisionPulse is a dynamic web application designed to facilitate structured dec
 -   **Local Data Persistence**: Save and load your decision projects directly in the browser using local storage.
 -   **Intuitive User Interface**: A responsive and easy-to-use interface for seamless interaction.
 -   **Extensible Design**: A Python directory is included, allowing for the integration of advanced algorithms, data processing, or backend functionalities.
-
-## 🖥️ Screenshots
-
-<!-- TODO: Add actual screenshots of the application's interface, showing the decision matrix, scoring, and results. -->
-<!-- Example: -->
-<!-- ![Screenshot of DecisionPulse Dashboard](docs/images/dashboard.png) -->
-<!-- ![Screenshot of Criteria and Options Management](docs/images/criteria-options.png) -->
-
-## 🛠️ Tech Stack
-
-**Frontend:**
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-
-**Backend/Utility:**
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-
-**Tools:**
-![VS Code](https://img.shields.io/badge/vscode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)
 
 ## 🚀 Quick Start
 
@@ -174,8 +139,6 @@ This project is currently without an explicit license. Please contact the reposi
 -   🐛 Issues: [GitHub Issues](https://github.com/reyxdz/DecisionPulse/issues)
 
 ---
-
-<div align="center">
 
 **⭐ Star this repo if you find it helpful!**
 
